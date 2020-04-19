@@ -65,9 +65,7 @@ public enum TokenType {
   RETURN, //done
   NEW, //done
   NIL, //done
-  GET, //added for arrays
-  LEN, //added for arrays
-  ARRAY,
+  ARRAY, //added for arrays
   // identifiers
   ID
 }

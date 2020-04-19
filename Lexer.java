@@ -246,8 +246,6 @@ public class Lexer {
 				return new Token(TokenType.VAR, out, line, temp);
 			case "set":
 				return new Token(TokenType.SET, out, line, temp);
-			case "get":
-				return new Token(TokenType.GET, out, line, temp); // added for arrays
 			case "return":
 				return new Token(TokenType.RETURN, out, line, temp);
 			case "new":
