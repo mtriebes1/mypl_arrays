@@ -1,6 +1,6 @@
 /**
-* Author: Alex Lloyd
-* Assign: 2
+* Author: Alex Lloyd, Nick Mooney, Matthew Triebes
+* Assign: Lexer
 *
 * The lexer implementation tokenizes a given input stream. The lexer
 * implements a pull-based model via the nextToken function such that
@@ -142,6 +142,14 @@ public class Lexer {
 			out += (char)read();
 			column ++;
 			return new Token(TokenType.RPAREN, out, line, column);
+		case '[':
+			out += (char)read();
+			column++;
+			return new Token(TokenType.LBRACKET, out, line, column); // added for arrays
+		case ']':
+			out += (char)read();
+			column++;
+			return new Token(TokenType.RBRACKET, out, line, column); // added for arrays
 		case '>':
 			out += (char)read();
 			column++;
@@ -202,6 +210,8 @@ public class Lexer {
 				return new Token(TokenType.STRING_TYPE, out, line, temp);
 			case "bool":
 				return new Token(TokenType.BOOL_TYPE, out, line, temp);
+			case "array":
+				return new Token(TokenType.ARRAY, out, line, temp); // added in for arrays
 			case "type":
 				return new Token(TokenType.TYPE, out, line, temp);
 			case "and":
@@ -236,6 +246,8 @@ public class Lexer {
 				return new Token(TokenType.VAR, out, line, temp);
 			case "set":
 				return new Token(TokenType.SET, out, line, temp);
+			case "get":
+				return new Token(TokenType.GET, out, line, temp); // added for arrays
 			case "return":
 				return new Token(TokenType.RETURN, out, line, temp);
 			case "new":
