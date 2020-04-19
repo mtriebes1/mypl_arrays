@@ -1,4 +1,4 @@
-var array int[10] stuff12 := null
-var array int[0] when := 79
+var array int [10] stuff12 := null
+var array int [0] when := 79
 
 set when := [7, 2]
