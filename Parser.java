@@ -10,6 +10,8 @@
 
 import java.util.*;
 
+import jdk.nashorn.internal.parser.TokenType;
+
 
 public class Parser {
 	
@@ -150,6 +152,9 @@ public class Parser {
 		}
 		else if(currToken.type() == TokenType.VAR) {
 			stmtNode = vdecl(Node);
+		}
+		else if(currToken.type() == TokenType.ARRAY) { // added for arrays
+			stmtNode = arrdecl(Node);
 		}
 		else {
 			stmtNode = expr(Node);
@@ -293,6 +298,47 @@ public class Parser {
 		return varNode;
 	}
 
+	//<arrdecl> ::= ARRAY (<dtype>|empty) LBRACKET INT_VAL RBRACKET ID
+	private RArray arrdecl(StmtList Node) throws MyPLException {
+		debug("<arrdecl>");
+		RArray arr = new RArray();
+		eat(TokenType.ARRAY, "expected array");
+		if(currToken.type() != TokenType.LBRACKET) {
+			arr.arrType = currToken;
+			dtype(Node);
+		}
+		eat(TokenType.LBRACKET, "Expected '[");
+		arr.arrSize = (Integer)currToken.lexeme();
+		eat(TokenType.INT_VAL, "Expected Integer");
+		eat(TokenType.RBRACKET, "Expected ']");
+		arr.arrName = currToken;
+		eat(TokenType.ID, "Expected an ID value");
+		eat(TokenType.ASSIGN, "Expected an assignment");
+		arr.arrList = expr(Node);
+		return arr;
+	}
+
+	//<aitem> ::= ((LBRACKET <pval> (COMMA <pval>)* RBRACKET ) | NIL)
+	private ArrayList<Expr> aitem(StmtList Node) throws MyPLException {
+		debug("aitem");
+		ArrayList<Expr> alist = new ArrayList<>();
+		if (currToken.type == TokenType.LBRACKET) {
+			eat(TokenType.LBRACKET, "expected bracket");
+			alist.arrList.add(expr(Node));
+			pval(Node);
+			while (currToken.type == TokenType.COMMA) {
+				advance();
+				alist.arrList.add(expr(Node));
+				pval(Node);
+			}
+			eat(TokenType.RBRACKET, "expected bracket");
+		}
+		else {
+			eat(TokenType.NIL, "Expected NIL");
+		}
+		return alist;
+	}
+
 	//<assign> ::= SET <lvalue> ASSIGN <expr>
 	private AssignStmt assign(StmtList Node) throws MyPLException {
 		debug("<assign>");
@@ -428,7 +474,7 @@ public class Parser {
 		}
 	}
 
-	//<rvalue> ::= <pval> | NIL | NEW ID | <idrval> | NEG <expr>
+	//<rvalue> ::= <pval> | NIL | NEW ID | <idrval> | NEG <expr> | <aitem>
 	private RValue rvalue(StmtList Node) throws MyPLException {
 		debug("<rvalue>");
 		
@@ -456,6 +502,10 @@ public class Parser {
 			simpNode.val = currToken;
 			pval();
 			return simpNode;
+		}
+		else if(currToken.type() == TokenType.LBRACKET) {
+			advance();
+			return aitem(Node);
 		}
 		else {
 			return idrval(Node);
