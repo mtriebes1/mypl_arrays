@@ -339,7 +339,11 @@ public class Parser {
 		eat(TokenType.SET, "expecting set");
 		assignNode.lhs = lvalue(Node);
 		eat(TokenType.ASSIGN, "expecting :=");
+		if(currToken.type() != TokenType.LBRACKET){
 		assignNode.rhs = expr(Node);
+		}else{
+		assignNode.arrList = aitem();
+		}
 		return assignNode;
 	}
 
