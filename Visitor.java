@@ -22,6 +22,7 @@ public interface Visitor {
   public void visit(ForStmt node);
   public void visit(TypeDeclStmt node);
   public void visit(FunDeclStmt node);
+  public void visit(ArrDeclStmt node);
 
   // expressions
   public void visit(Expr node);

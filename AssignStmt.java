@@ -1,5 +1,4 @@
 
-
 public class AssignStmt implements Stmt {
 
   public LValue lhs = null;

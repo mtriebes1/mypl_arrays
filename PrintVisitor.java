@@ -56,6 +56,21 @@ public class PrintVisitor implements Visitor {
 		node.varExpr.accept(this);
 	}
 
+	public void visit(ArrDeclStmt node){
+		out.print("array ");
+		if (node.arrType != null){
+			out.print(node.arrType.lexeme() + " ");
+			out.print("[");
+			node.arrSize.accept(this);
+			out.print("]");
+			out.print(" := [");
+			for (Expr n : node.arrList){
+				n.accept(this);
+				out.print(",");
+			}
+		}
+	}
+
 	public void visit(AssignStmt node) {
 		out.print("set ");
 		node.lhs.accept(this);
