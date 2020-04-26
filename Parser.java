@@ -174,19 +174,19 @@ public class Parser {
 		arrNode.arrName = currToken;
 		eat(TokenType.ID, "expecting ID");
 		eat(TokenType.ASSIGN, "expecting :=");
-		arrNode.arrList = aitem(Node);
+		arrNode.arrList = expr(Node);
 		return arrNode;
 	}
 
 	//<aitem> ::= (LBRACKET (<expr> (COMAA <expr>)*| epsilon) RBRACKET)
-	private ArrayList<Expr> aitem(StmtList Node) throws MyPLException {
-		ArrayList<Expr> item = new ArrayList<>();
+	private Aitem aitem(StmtList Node) throws MyPLException {
+		Aitem item = new Aitem();
 		eat(TokenType.LBRACKET, "expecting [");
 		if(currToken.type() != TokenType.RBRACKET){
-			item.add(expr(Node));
+			item.items.add(expr(Node));
 			while(currToken.type() == TokenType.COMMA){
 				advance();
-				item.add(expr(Node));
+				item.items.add(expr(Node));
 			}
 			eat(TokenType.RBRACKET, "expecting ]");
 		}
@@ -339,11 +339,7 @@ public class Parser {
 		eat(TokenType.SET, "expecting set");
 		assignNode.lhs = lvalue(Node);
 		eat(TokenType.ASSIGN, "expecting :=");
-		if(currToken.type() != TokenType.LBRACKET){
 		assignNode.rhs = expr(Node);
-		}else{
-		assignNode.arrList = aitem();
-		}
 		return assignNode;
 	}
 
@@ -480,6 +476,9 @@ public class Parser {
 			None.val = currToken;
 			advance();
 			return None;
+		}
+		else if(currToken.type() == TokenType.LBRACKET){
+			return aitem(Node);
 		}
 		else if(currToken.type() == TokenType.NEW) {
 			advance();

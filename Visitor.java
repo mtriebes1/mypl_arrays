@@ -36,6 +36,7 @@ public interface Visitor {
   public void visit(CallRValue node);
   public void visit(IDRValue node);
   public void visit(NegatedRValue node);
+  public void visit(Aitem node);
 
 }    
 

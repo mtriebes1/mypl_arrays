@@ -63,11 +63,8 @@ public class PrintVisitor implements Visitor {
 			out.print("[");
 			node.arrSize.accept(this);
 			out.print("]");
-			out.print(" := [");
-			for (Expr n : node.arrList){
-				n.accept(this);
-				out.print(",");
-			}
+			out.print(" := ");
+			node.arrList.accept(this);
 		}
 	}
 
@@ -240,6 +237,14 @@ public class PrintVisitor implements Visitor {
 		node.expr.accept(this);
 	}
 
+	public void visit(Aitem node) {
+		out.print("[");
+		for(Expr n :node.items){
+			n.accept(this);
+			out.print(",");
+		}
+		out.print("]");
+	}
 
 }    
 
