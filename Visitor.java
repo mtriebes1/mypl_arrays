@@ -11,31 +11,30 @@
 public interface Visitor {
 
   // statement list
-  public void visit(StmtList node) throws MyPLException;
+  public void visit(StmtList node);
 
   // statements
-  public void visit(VarDeclStmt node) throws MyPLException;
-  public void visit(AssignStmt node) throws MyPLException;
-  public void visit(ReturnStmt node) throws MyPLException;
-  public void visit(IfStmt node) throws MyPLException;
-  public void visit(WhileStmt node) throws MyPLException;
-  public void visit(ForStmt node) throws MyPLException;
-  public void visit(TypeDeclStmt node) throws MyPLException;
-  public void visit(FunDeclStmt node) throws MyPLException;
-  public void visit(ArrDeclStmt node) throws MyPLException;
+  public void visit(VarDeclStmt node);
+  public void visit(AssignStmt node);
+  public void visit(ReturnStmt node);
+  public void visit(IfStmt node);
+  public void visit(WhileStmt node);
+  public void visit(ForStmt node);
+  public void visit(TypeDeclStmt node);
+  public void visit(FunDeclStmt node);
 
   // expressions
-  public void visit(Expr node) throws MyPLException;
-  public void visit(LValue node) throws MyPLException;
-  public void visit(SimpleTerm node) throws MyPLException;
-  public void visit(ComplexTerm node) throws MyPLException;
+  public void visit(Expr node);
+  public void visit(LValue node);
+  public void visit(SimpleTerm node);
+  public void visit(ComplexTerm node);
 
   // rvalues
-  public void visit(SimpleRValue node) throws MyPLException;
-  public void visit(NewRValue node) throws MyPLException;
-  public void visit(CallRValue node) throws MyPLException;
-  public void visit(IDRValue node) throws MyPLException;
-  public void visit(NegatedRValue node) throws MyPLException;
+  public void visit(SimpleRValue node);
+  public void visit(NewRValue node);
+  public void visit(CallRValue node);
+  public void visit(IDRValue node);
+  public void visit(NegatedRValue node);
 
 }    
 

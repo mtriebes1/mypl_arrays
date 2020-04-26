@@ -5,7 +5,7 @@ public class StmtList implements ASTNode {
 
   public ArrayList<Stmt> stmts = new ArrayList<>();
 
-  public void accept(Visitor visitor) throws MyPLException {
+  public void accept(Visitor visitor) {
     visitor.visit(this);
   }
 

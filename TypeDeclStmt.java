@@ -6,7 +6,7 @@ public class TypeDeclStmt implements Stmt {
   public Token typeId = null;
   public ArrayList<VarDeclStmt> fields = new ArrayList<>();
   
-  public void accept(Visitor visitor) throws MyPLException {
+  public void accept(Visitor visitor) {
     visitor.visit(this);
   }
 

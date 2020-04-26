@@ -1,5 +1,5 @@
 /**
- * Authors: Matthew Triebes, Alex Lloyd, Nick Mooney
+ * Author: S. Bowers
  * Assign: 2
  *
  * The set of token types in MyPL.  Note that EOS denotes the "end of
@@ -12,60 +12,55 @@
 
 public enum TokenType {
   // basic symbols
-  COMMA, //done
-  DOT, //done
-  PLUS, //done
-  MINUS, //done
-  MULTIPLY, //done
-  DIVIDE, //done
-  MODULO, //done
-  EQUAL, //done
-  GREATER_THAN, //done
+  COMMA,
+  DOT,
+  PLUS,
+  MINUS,
+  MULTIPLY,
+  DIVIDE,
+  MODULO,
+  EQUAL,
+  GREATER_THAN,
   GREATER_THAN_EQUAL,
-  LESS_THAN, //done
+  LESS_THAN,
   LESS_THAN_EQUAL,
-  NOT_EQUAL, //done
-  LPAREN, //done
-  RPAREN, //done
-  LBRACKET, //added for arrays
-  RBRACKET, //added for arrays
-  ASSIGN, // done
-  EOS, // done
- 
+  NOT_EQUAL,
+  LPAREN,
+  RPAREN,
+  ASSIGN,
+  EOS, 
   // data types
-  INT_VAL, //done
-  DOUBLE_VAL, //done
-  CHAR_VAL, //done
-  STRING_VAL, //done
+  INT_VAL,
+  DOUBLE_VAL,
+  CHAR_VAL,
+  STRING_VAL,
   BOOL_VAL,
-  
   // reserved words
-  INT_TYPE, //done
-  BOOL_TYPE, //done
-  DOUBLE_TYPE, //done
-  CHAR_TYPE, //done
-  STRING_TYPE, //done
-  TYPE, //done
-  AND, //done 
-  OR, //done
-  NOT, //done
-  NEG, //done
-  WHILE, //done
-  FOR, //done
-  TO, //done
-  DO, //done
-  IF, //done
-  THEN, //done
-  ELSE, //done
-  ELIF, //done
-  END, //done
-  FUN, //done
-  VAR, //done
-  SET, //done
-  RETURN, //done
-  NEW, //done
-  NIL, //done
-  ARRAY, //added for arrays
+  INT_TYPE,
+  BOOL_TYPE,
+  DOUBLE_TYPE,
+  CHAR_TYPE,
+  STRING_TYPE,
+  TYPE,
+  AND,
+  OR,
+  NOT,
+  NEG,
+  WHILE,
+  FOR,
+  TO,
+  DO,
+  IF,
+  THEN,
+  ELSE,
+  ELIF,
+  END,
+  FUN,
+  VAR,
+  SET,
+  RETURN,
+  NEW,
+  NIL,
   // identifiers
   ID
 }

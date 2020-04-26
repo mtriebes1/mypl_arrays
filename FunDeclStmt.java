@@ -8,7 +8,7 @@ public class FunDeclStmt implements Stmt {
   public ArrayList<FunParam> params = new ArrayList<>();
   public StmtList stmtList = new StmtList();
   
-  public void accept(Visitor visitor) throws MyPLException {
+  public void accept(Visitor visitor) {
     visitor.visit(this);
   }
 

@@ -6,7 +6,7 @@ public class ForStmt implements Stmt {
   public Expr endExpr = null;
   public StmtList stmtList = new StmtList();
   
-  public void accept(Visitor visitor) throws MyPLException {
+  public void accept(Visitor visitor) {
     visitor.visit(this);
   }
 

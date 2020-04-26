@@ -1,4 +1,5 @@
 
+
 public class Expr implements Stmt {
 
   public boolean negated = false;
@@ -6,8 +7,9 @@ public class Expr implements Stmt {
   public Token operator = null;
   public Expr rest = null;
 
-  public void accept(Visitor visitor) throws MyPLException {
+  public void accept(Visitor visitor) {
     visitor.visit(this);
   }
 
 }
+

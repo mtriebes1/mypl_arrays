@@ -1,6 +1,6 @@
 /**
-* Author: Alex Lloyd, Nick Mooney, Matthew Triebes
-* Assign: Lexer
+* Author: Alex Lloyd
+* Assign: 2
 *
 * The lexer implementation tokenizes a given input stream. The lexer
 * implements a pull-based model via the nextToken function such that
@@ -82,7 +82,7 @@ public class Lexer {
 			else if(peek() == '#') {
 				column = 0;
 				line++;
-				while(peek() != '\n' && peek() != -1){
+				while(peek() != '\n'){
 					read();
 				}
 				read();
@@ -142,14 +142,6 @@ public class Lexer {
 			out += (char)read();
 			column ++;
 			return new Token(TokenType.RPAREN, out, line, column);
-		case '[':
-			out += (char)read();
-			column++;
-			return new Token(TokenType.LBRACKET, out, line, column); // added for arrays
-		case ']':
-			out += (char)read();
-			column++;
-			return new Token(TokenType.RBRACKET, out, line, column); // added for arrays
 		case '>':
 			out += (char)read();
 			column++;
@@ -210,8 +202,6 @@ public class Lexer {
 				return new Token(TokenType.STRING_TYPE, out, line, temp);
 			case "bool":
 				return new Token(TokenType.BOOL_TYPE, out, line, temp);
-			case "array":
-				return new Token(TokenType.ARRAY, out, line, temp); // added in for arrays
 			case "type":
 				return new Token(TokenType.TYPE, out, line, temp);
 			case "and":
@@ -342,7 +332,7 @@ public class Lexer {
 		
 		column++;
 		out += (char)read();
-		while(peek() != ' ' && peek() != '\n' && peek() != '\r'&& peek() != -1){
+		while(peek() != ' ' && peek() != '\n' && peek() == '\r'){
 			out += (char)read();
 			column++;
 		}

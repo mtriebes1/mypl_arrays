@@ -6,8 +6,9 @@ public class CallRValue implements RValue {
   public Token funName = null;
   public ArrayList<Expr> argList = new ArrayList<>();
 
-  public void accept(Visitor visitor) throws MyPLException {
+  public void accept(Visitor visitor) {
     visitor.visit(this);
   }
   
 }
+

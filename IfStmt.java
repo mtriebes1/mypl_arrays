@@ -8,7 +8,7 @@ public class IfStmt implements Stmt {
   public boolean hasElse = false;
   public StmtList elseStmtList = new StmtList();
   
-  public void accept(Visitor visitor) throws MyPLException {
+  public void accept(Visitor visitor) {
     visitor.visit(this);
   }
 
