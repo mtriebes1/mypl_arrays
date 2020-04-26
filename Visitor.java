@@ -22,6 +22,7 @@ public interface Visitor {
   public void visit(ForStmt node) throws MyPLException;
   public void visit(TypeDeclStmt node) throws MyPLException;
   public void visit(FunDeclStmt node) throws MyPLException;
+  public void visit(ArrDeclStmt node) throws MyPLException;
 
   // expressions
   public void visit(Expr node) throws MyPLException;
