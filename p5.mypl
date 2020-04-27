@@ -1,0 +1,8 @@
+# -------- General Test cases 
+array int [6] test1 = [1, 2, 3, 4, 5, 6]
+var int len := 0
+var int item := 0
+
+set len := length(test1)
+set test1 := put(test1, 2, 10)
+set item := get(test1, 2)
