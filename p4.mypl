@@ -1,5 +1,5 @@
 # --------- General Array Decl Testing
-array int [5] test1 := []
+array int [5] test1 := [1,2,3,4,5,6,7]
 array char [2] test2 := ['a', 'b']
 array string [3] test3 := ["a", "b", "c"]
 
@@ -7,7 +7,7 @@ set test1 := [1, 2, 3, 4, 5]
 
 # --------- these should return errors
 #array int [2] error1 := [1, '2']
-#array char [5] error2 := []
+array char [5] error2 := []
 #array string [4] error 3 := ["a", "b" , 'c', "d"]
 
-#set error2 := ['1', '2', 3, '4', '5']
+set error2 := ['1', '2', '3', 4 , '5']

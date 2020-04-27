@@ -41,28 +41,28 @@ public class TypeChecker implements Visitor {
     symbolTable.setInfo("return", "int");
     // print function
     symbolTable.addName("print");
-    symbolTable.setInfo("print", List.of("string", "nil"));
+    symbolTable.setInfo("print", List.of("arraychar", "nil"));
     // read function
     symbolTable.addName("read");
-    symbolTable.setInfo("read", List.of("string"));
+    symbolTable.setInfo("read", List.of("arraychar"));
 
     symbolTable.addName("concat");
-    symbolTable.setInfo("concat", List.of("string", "string","string"));
+    symbolTable.setInfo("concat", List.of("arraychar", "arraychar","arraychar"));
 
     symbolTable.addName("append");
-    symbolTable.setInfo("append", List.of("string", "char", "string"));
+    symbolTable.setInfo("append", List.of("arraychar", "char", "arraychar"));
 
     symbolTable.addName("itos");
-    symbolTable.setInfo("itos", List.of("int", "string"));
+    symbolTable.setInfo("itos", List.of("int", "arraychar"));
 
     symbolTable.addName("stoi");
-    symbolTable.setInfo("stoi", List.of("string", "int"));
+    symbolTable.setInfo("stoi", List.of("arraychar", "int"));
 
     symbolTable.addName("dtos");
-    symbolTable.setInfo("dtos", List.of("double", "string"));
+    symbolTable.setInfo("dtos", List.of("double", "arraychar"));
 
     symbolTable.addName("stod");
-    symbolTable.setInfo("stod", List.of("string", "double"));
+    symbolTable.setInfo("stod", List.of("arraychar", "double"));
 
     symbolTable.addName("put");
 
@@ -372,7 +372,7 @@ public class TypeChecker implements Visitor {
       for(Expr n: node.items){
         n.accept(this);
         if(currType != checkType){
-          error("Invalid Array", getFirstToken(node));
+          error("Invalid Array", getFirstToken(node.items.get(0)));
         }
       }
       currType = "array" + checkType;
@@ -394,7 +394,7 @@ public class TypeChecker implements Visitor {
         symbolTable.setInfo(node.arrName.lexeme(),"array"+node.arrType.lexeme());
       }
       node.arrList.accept(this);
-      if(!currType.equals("arraynil") && !currType.equals("array"+node.arrType.lexeme())){
+      if(!currType.equals("arraynil") && !currType.equals(symbolTable.getInfo(node.arrName.lexeme()))){
         error("array type mismatch", node.arrName);
       }
   }
