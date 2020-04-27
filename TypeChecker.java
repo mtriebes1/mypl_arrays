@@ -100,7 +100,12 @@ public class TypeChecker implements Visitor {
           error("type mismatch",node.varId);
         }
       }
-      symbolTable.setInfo(node.varId.lexeme(),node.varType.lexeme());
+      if(node.varType.lexeme().equals("string")){
+      symbolTable.setInfo(node.varId.lexeme(),"arraychar");
+      }
+      else{
+        symbolTable.setInfo(node.varId.lexeme(),node.varType.lexeme());
+      }
     }
   }
 
@@ -361,7 +366,7 @@ public class TypeChecker implements Visitor {
 
   public void visit(Aitem node) throws MyPLException {
     String checkType;
-    if(node.items != null){
+    if(node.items.size() != 0){
       node.items.get(0).accept(this);
       checkType = currType;
       for(Expr n: node.items){

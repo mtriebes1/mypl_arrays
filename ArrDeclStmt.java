@@ -1,6 +1,3 @@
-
-import java.util.ArrayList;
-
 public class ArrDeclStmt implements Stmt {
 
     public Token arrName = null;
