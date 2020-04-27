@@ -403,9 +403,32 @@ public class TypeChecker implements Visitor {
     if(!symbolTable.nameExists(node.funName.lexeme())){
       error("variable not defined ", node.funName);
     }
+    if(node.funName.lexeme().equals("put") || node.funName.lexeme().equals("get")){
+      if(node.argList.size() > 1){
+        node.argList.get(1).accept(this);
+        if(arrayType()){
+          defineArray(node);
+        }
+        else{
+          error("type mismatch in function call :)", node.funName);
+        }
+      }
+    }
+    if(node.funName.lexeme().equals("length")){
+      if(node.argList.size() > 0){
+        node.argList.get(0).accept(this);
+        if(arrayType()){
+          defineArray(node);
+        }
+        else{
+          error("type mismatch in function call", node.funName);
+        }
+      }
+    }
     if(!(symbolTable.getInfo(node.funName.lexeme()) instanceof List)){
       error("unexpected id", node.funName);
     }
+
     List<String> typeList = (List<String>)symbolTable.getInfo(node.funName.lexeme());
     for(int i = 0; i < typeList.size() - 1; i++){
       node.argList.get(i).accept(this);
@@ -472,7 +495,7 @@ public class TypeChecker implements Visitor {
     String temporary = null;
     Boolean isArray = false;
     String comparison = "array";
-    if (currType.length() > comparison.length()){
+    if (currType.length() > comparison.length() + 1){
       isArray = true;
       for(int i = 0 ; i < comparison.length(); i++){
         if(currType.charAt(i) != comparison.charAt(i)){
@@ -480,7 +503,8 @@ public class TypeChecker implements Visitor {
         }
       }
       if(isArray){
-        for(int i = comparison.length(); i < currType.length(); i++){
+        temporary = Character.toString(currType.charAt(comparison.length()));
+        for(int i = comparison.length() + 1; i < currType.length(); i++){
           temporary += currType.charAt(i);
         }
       }
@@ -491,13 +515,13 @@ public class TypeChecker implements Visitor {
     return isArray;
   }
 
-  private void defineArray(){
+  private void defineArray(CallRValue node) throws MyPLException{
+    String input = "array"+currType;
+    symbolTable.setInfo("length", List.of(input,"int"));
 
-    symbolTable.setInfo("length", List.of("array" + currType,"int"));
+    symbolTable.setInfo("get", List.of("int", input, currType));
 
-    symbolTable.setInfo("get", List.of("int", "array" + currType, currType));
-
-    symbolTable.setInfo("put", List.of("int", "array" + currType, "nill"));
+    symbolTable.setInfo("put", List.of("int", input, currType, "nil"));
   }
 
   private void error(String msg, Token token) throws MyPLException {
