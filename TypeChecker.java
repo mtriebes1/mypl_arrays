@@ -387,7 +387,12 @@ public class TypeChecker implements Visitor {
         error("array already defined", node.arrName);
       }
       symbolTable.addName(node.arrName.lexeme());
-      symbolTable.setInfo(node.arrName.lexeme(),"array"+node.arrType.lexeme());
+      if(node.arrType.lexeme().equals("string")){
+        symbolTable.setInfo(node.arrName.lexeme(),"arrayarraychar");
+      }
+      else{
+        symbolTable.setInfo(node.arrName.lexeme(),"array"+node.arrType.lexeme());
+      }
       node.arrList.accept(this);
       if(!currType.equals("arraynil") && !currType.equals("array"+node.arrType.lexeme())){
         error("array type mismatch", node.arrName);
