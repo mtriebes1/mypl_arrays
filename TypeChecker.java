@@ -46,12 +46,6 @@ public class TypeChecker implements Visitor {
     symbolTable.addName("read");
     symbolTable.setInfo("read", List.of("string"));
 
-    symbolTable.addName("length");
-    symbolTable.setInfo("length", List.of("int"));
-
-    symbolTable.addName("get");
-    symbolTable.setInfo("get", List.of("int", "string", "char"));
-
     symbolTable.addName("concat");
     symbolTable.setInfo("concat", List.of("string", "string","string"));
 
@@ -69,6 +63,12 @@ public class TypeChecker implements Visitor {
 
     symbolTable.addName("stod");
     symbolTable.setInfo("stod", List.of("string", "double"));
+
+    symbolTable.addName("put");
+
+    symbolTable.addName("get");
+
+    symbolTable.addName("length");
   }
 
   
@@ -350,13 +350,43 @@ public class TypeChecker implements Visitor {
     else if (node.val.type() == TokenType.CHAR_VAL)
       currType = "char";
     else if (node.val.type() == TokenType.STRING_VAL)
-      currType = "string";
+      currType = "arraychar";
     else if (node.val.type() == TokenType.NIL)
       currType = "nil";
   }
 
   public void visit(NewRValue node) throws MyPLException {
     currType = node.typeId.lexeme();
+  }
+
+  public void visit(Aitem node) throws MyPLException {
+    String checkType;
+    if(node.items != null){
+      node.items.get(0).accept(this);
+      checkType = currType;
+      for(Expr n: node.items){
+        n.accept(this);
+        if(currType != checkType){
+          error("Invalid Array", getFirstToken(node));
+        }
+      }
+      currType = "array" + checkType;
+    }
+    else{
+      currType = "arraynil"; //[]
+    }
+  }
+
+  public void visit(ArrDeclStmt node) throws MyPLException {
+      if(symbolTable.nameExistsInCurrEnv(node.arrName.lexeme())){
+        error("array already defined", node.arrName);
+      }
+      symbolTable.addName(node.arrName.lexeme());
+      symbolTable.setInfo(node.arrName.lexeme(),"array"+node.arrType.lexeme());
+      node.arrList.accept(this);
+      if(!currType.equals("arraynil") && !currType.equals("array"+node.arrType.lexeme())){
+        error("array type mismatch", node.arrName);
+      }
   }
 
   public void visit(CallRValue node) throws MyPLException {
@@ -427,6 +457,38 @@ public class TypeChecker implements Visitor {
 
   
   // helper functions
+
+  private Boolean arrayType() throws MyPLException {
+    String temporary = null;
+    Boolean isArray = false;
+    String comparison = "array";
+    if (currType.length() > comparison.length()){
+      isArray = true;
+      for(int i = 0 ; i < comparison.length(); i++){
+        if(currType.charAt(i) != comparison.charAt(i)){
+          isArray = false;
+        }
+      }
+      if(isArray){
+        for(int i = comparison.length(); i < currType.length(); i++){
+          temporary += currType.charAt(i);
+        }
+      }
+    }
+    if(isArray){
+    currType = temporary;
+    }
+    return isArray;
+  }
+
+  private void defineArray(){
+
+    symbolTable.setInfo("length", List.of("array" + currType,"int"));
+
+    symbolTable.setInfo("get", List.of("int", "array" + currType, currType));
+
+    symbolTable.setInfo("put", List.of("int", "array" + currType, "nill"));
+  }
 
   private void error(String msg, Token token) throws MyPLException {
     int row = token.row();
