@@ -151,6 +151,9 @@ public class Interpreter implements Visitor {
     Object firstVal = currVal;
     
     if (node.operator != null) {
+      if(firstVal instanceof Aitem){
+        error("cannot compare arrays",getFirstToken(node));
+      }
       node.rest.accept(this);
       Object restVal = currVal;
       String op = node.operator.lexeme();
@@ -390,6 +393,24 @@ public class Interpreter implements Visitor {
       symbolTable.setEnvironmentId(currEnv);
     }
   }
+
+  public void visit(ArrDeclStmt node) throws MyPLException {
+    node.arrSize.accept(this);
+    int Size = (Integer)currVal;
+    node.arrList.accept(this);
+    List<Object> items = (List<Object>)node.arrList;
+    if(items.size() > Size){
+      error("array out of bounds", node.arrName);
+    }
+    List<Object> content= List.of(Size,items);
+    symbolTable.addName(node.arrName.lexeme());
+    symbolTable.setInfo(node.arrName.lexeme(), content);
+  }
+
+  public void visit(Aitem node) throws MyPLException {
+    currVal = node.items;
+  }
+
 
   
   public void visit(IDRValue node) throws MyPLException {
