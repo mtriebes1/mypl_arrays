@@ -536,12 +536,22 @@ public class Interpreter implements Visitor {
     // ------------- array functions
     else if (funName.equals("get")) 
     {
-      int get_index = (Integer)argVals.get(0);
-      List<Object> arr = (List<Object>)argVals.get(1);
-      if(get_index > arr.size() - 1){
-        error("index out of bounds", getFirstToken(node));
+      if(argVals.get(1) instanceof List){
+        int get_index = (Integer)argVals.get(0);
+        List<Object> arr = (List<Object>)argVals.get(1);
+        if(get_index > arr.size() - 1){
+          error("index out of bounds", getFirstToken(node));
+        }
+        ((Expr)arr.get(get_index)).accept(this);
       }
-      ((Expr)arr.get(get_index)).accept(this);
+      else{
+        if((Integer)argVals.get(0) < ((String)argVals.get(1)).length()){
+          currVal = ((String)argVals.get(1)).charAt((Integer)argVals.get(0));
+        }
+        else{
+          error("get out of bounds",getFirstToken(node.argList.get(0)));
+        }
+      }
     }
     else if (funName.equals("put")) 
     {
@@ -550,8 +560,13 @@ public class Interpreter implements Visitor {
       arr.set(put_index,node.argList.get(2));
     }
     else if (funName.equals("length")) {
+      if(argVals.get(0) instanceof List){
       List<Object> arr = (List<Object>)argVals.get(0);
       currVal = (Integer)arr.size();
+      }
+      else{
+        currVal = ((String)argVals.get(0)).length();
+      }
     }
   }
 
