@@ -7,7 +7,7 @@ array char [5] test2 := ['1','2','3','4','5']
 array string [5] test3 := ["1", "2", "3", "4", "5"]
 var int len1 := length(test1)
 var int len2 := length(test2)
-ver int len3 := length(test3)
+var int len3 := length(test3)
 
 print("Length test1 - should be 5, is: ")
 print(itos(len1))
@@ -28,12 +28,13 @@ print("\n")
 var int i := 0 
 
 put(0, test1, 42)
-put(0, test2, '42')
+put(0, test2, 'H')
 put(0, test3, "42")
 
+var int val1 := 0
 while i < len1 do
-    set val := get(i, test1)
-    print(itos(val))
+    set val1 := get(i, test1)
+    print(itos(val1))
     print(" ")
     set i := i + 1
 end 
@@ -43,21 +44,23 @@ print("Should be: 42 2 3 4 5")
 print("\n")
 set i := 0
 
+var char val2 := ' '
 while i < len2 do
-    set val := get(i, test2)
-    print(val)
+    set val2 := get(i, test2)
+    print(append("", val2))
     print(" ")
     set i := i + 1
 end 
 
 print("\n")
-print("Should be: 42 2 3 4 5")
+print("Should be: H 2 3 4 5")
 print("\n")
 set i := 0
 
+var string val3 := " "
 while i < len3 do
-    set val := get(i, test3)
-    print(val)
+    set val3 := get(i, test3)
+    print(val3)
     print(" ")
     set i := i + 1
 end 
