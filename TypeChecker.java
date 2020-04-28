@@ -21,6 +21,7 @@
  */
 
 
+import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -128,7 +129,9 @@ public class TypeChecker implements Visitor {
       node.returnExpr.accept(this);
       String exprType = currType;
       if(!exprType.equals(symbolTable.getInfo("return")) && !exprType.equals("nil")){
-        error("wrong return type", node.returnToken);
+        if(!(exprType.equals("arraychar")) && !(symbolTable.getInfo("return").equals("string"))) {
+          error("wrong return type", node.returnToken);
+        }
       }
     }
     else{
@@ -421,7 +424,7 @@ public class TypeChecker implements Visitor {
           defineArray(node);
         }
         else{
-          error("type mismatch in function call", node.funName);
+          error("type mismatch in function call :(", node.funName);
         }
       }
     }
@@ -433,7 +436,9 @@ public class TypeChecker implements Visitor {
     for(int i = 0; i < typeList.size() - 1; i++){
       node.argList.get(i).accept(this);
       if(!(typeList.get(i).equals(currType)) && !(currType.equals("nil"))){
-        error("type mismatch in function call", getFirstToken(node));
+        if((!(typeList.get(i).equals("arraychar")) && !(currType.equals("string"))) && (!(typeList.get(i).equals("string")) && !(currType.equals("arraychar")))) {
+          error("type mismatch in function call :0", getFirstToken(node));
+        }
       }
     }
     currType = typeList.get(typeList.size() - 1);

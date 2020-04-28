@@ -68,3 +68,8 @@ end
 print("\n")
 print("Should be: 42 2 3 4 5")
 print("\n")
+
+var string kwe := "this "
+print("\n")
+print(concat(kwe, "blows"))
+print("\n")
