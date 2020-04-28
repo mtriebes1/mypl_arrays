@@ -1,0 +1,67 @@
+# ----------------------------------------- Test 3
+print("Test 3: Tests the 'length' function")
+print("\n")
+
+array int [5] test1 := [1,2,3,4,5]
+array char [5] test2 := ['1','2','3','4','5']
+array string [5] test3 := ["1", "2", "3", "4", "5"]
+var int len1 := length(test1)
+var int len2 := length(test2)
+ver int len3 := length(test3)
+
+print("Length test1 - should be 5, is: ")
+print(itos(len1))
+print("\n")
+
+print("Length test2 - should be 5, is: ")
+print(itos(len2))
+print("\n")
+
+print("Length test3 - should be 5, is: ")
+print(itos(len3))
+print("\n")
+
+# ----------------------------------------- Test 4
+print("Test 4: Tests the 'put' function")
+print("\n")
+
+var int i := 0 
+
+put(0, test1, 42)
+put(0, test2, '42')
+put(0, test3, "42")
+
+while i < len1 do
+    set val := get(i, test1)
+    print(itos(val))
+    print(" ")
+    set i := i + 1
+end 
+
+print("\n")
+print("Should be: 42 2 3 4 5")
+print("\n")
+set i := 0
+
+while i < len2 do
+    set val := get(i, test2)
+    print(val)
+    print(" ")
+    set i := i + 1
+end 
+
+print("\n")
+print("Should be: 42 2 3 4 5")
+print("\n")
+set i := 0
+
+while i < len3 do
+    set val := get(i, test3)
+    print(val)
+    print(" ")
+    set i := i + 1
+end 
+
+print("\n")
+print("Should be: 42 2 3 4 5")
+print("\n")
