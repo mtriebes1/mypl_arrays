@@ -41,34 +41,34 @@ public class TypeChecker implements Visitor {
     symbolTable.setInfo("return", "int");
     // print function
     symbolTable.addName("print");
-    symbolTable.setInfo("print", List.of("string", "nil"));
+    symbolTable.setInfo("print", List.of("arraychar", "nil"));
     // read function
     symbolTable.addName("read");
-    symbolTable.setInfo("read", List.of("string"));
-
-    symbolTable.addName("length");
-    symbolTable.setInfo("length", List.of("int"));
-
-    symbolTable.addName("get");
-    symbolTable.setInfo("get", List.of("int", "string", "char"));
+    symbolTable.setInfo("read", List.of("arraychar"));
 
     symbolTable.addName("concat");
-    symbolTable.setInfo("concat", List.of("string", "string","string"));
+    symbolTable.setInfo("concat", List.of("arraychar", "arraychar","arraychar"));
 
     symbolTable.addName("append");
-    symbolTable.setInfo("append", List.of("string", "char", "string"));
+    symbolTable.setInfo("append", List.of("arraychar", "char", "arraychar"));
 
     symbolTable.addName("itos");
-    symbolTable.setInfo("itos", List.of("int", "string"));
+    symbolTable.setInfo("itos", List.of("int", "arraychar"));
 
     symbolTable.addName("stoi");
-    symbolTable.setInfo("stoi", List.of("string", "int"));
+    symbolTable.setInfo("stoi", List.of("arraychar", "int"));
 
     symbolTable.addName("dtos");
-    symbolTable.setInfo("dtos", List.of("double", "string"));
+    symbolTable.setInfo("dtos", List.of("double", "arraychar"));
 
     symbolTable.addName("stod");
-    symbolTable.setInfo("stod", List.of("string", "double"));
+    symbolTable.setInfo("stod", List.of("arraychar", "double"));
+
+    symbolTable.addName("put");
+
+    symbolTable.addName("get");
+
+    symbolTable.addName("length");
   }
 
   
@@ -95,12 +95,17 @@ public class TypeChecker implements Visitor {
     }
     else{
       
-      if(!(currType.equals(node.varType.lexeme()))){
+      if(!(currType.equals(node.varType.lexeme()))&& !(currType.equals("arraychar")&&node.varType.lexeme().equals("string"))){
         if(!(currType.equals("nil"))){
           error("type mismatch",node.varId);
         }
       }
-      symbolTable.setInfo(node.varId.lexeme(),node.varType.lexeme());
+      if(node.varType.lexeme().equals("string")){
+      symbolTable.setInfo(node.varId.lexeme(),"arraychar");
+      }
+      else{
+        symbolTable.setInfo(node.varId.lexeme(),node.varType.lexeme());
+      }
     }
   }
 
@@ -350,7 +355,7 @@ public class TypeChecker implements Visitor {
     else if (node.val.type() == TokenType.CHAR_VAL)
       currType = "char";
     else if (node.val.type() == TokenType.STRING_VAL)
-      currType = "string";
+      currType = "arraychar";
     else if (node.val.type() == TokenType.NIL)
       currType = "nil";
   }
@@ -359,13 +364,71 @@ public class TypeChecker implements Visitor {
     currType = node.typeId.lexeme();
   }
 
+  public void visit(Aitem node) throws MyPLException {
+    String checkType;
+    if(node.items.size() != 0){
+      node.items.get(0).accept(this);
+      checkType = currType;
+      for(Expr n: node.items){
+        n.accept(this);
+        if(currType != checkType){
+          error("Invalid Array", getFirstToken(node.items.get(0)));
+        }
+      }
+      currType = "array" + checkType;
+    }
+    else{
+      currType = "arraynil"; //[]
+    }
+  }
+
+  public void visit(ArrDeclStmt node) throws MyPLException {
+      if(symbolTable.nameExistsInCurrEnv(node.arrName.lexeme())){
+        error("array already defined", node.arrName);
+      }
+      symbolTable.addName(node.arrName.lexeme());
+      if(node.arrType.lexeme().equals("string")){
+        symbolTable.setInfo(node.arrName.lexeme(),"arrayarraychar");
+      }
+      else{
+        symbolTable.setInfo(node.arrName.lexeme(),"array"+node.arrType.lexeme());
+      }
+      node.arrList.accept(this);
+      if(!currType.equals("arraynil") && !currType.equals(symbolTable.getInfo(node.arrName.lexeme()))){
+        error("array type mismatch", node.arrName);
+      }
+  }
+
   public void visit(CallRValue node) throws MyPLException {
     if(!symbolTable.nameExists(node.funName.lexeme())){
       error("variable not defined ", node.funName);
     }
+    if(node.funName.lexeme().equals("put") || node.funName.lexeme().equals("get")){
+      if(node.argList.size() > 1){
+        node.argList.get(1).accept(this);
+        if(arrayType()){
+          defineArray(node);
+        }
+        else{
+          error("type mismatch in function call :)", node.funName);
+        }
+      }
+    }
+    if(node.funName.lexeme().equals("length")){
+      if(node.argList.size() > 0){
+        node.argList.get(0).accept(this);
+        if(arrayType()){
+          defineArray(node);
+        }
+        else{
+          error("type mismatch in function call", node.funName);
+        }
+      }
+    }
     if(!(symbolTable.getInfo(node.funName.lexeme()) instanceof List)){
       error("unexpected id", node.funName);
     }
+
     List<String> typeList = (List<String>)symbolTable.getInfo(node.funName.lexeme());
     for(int i = 0; i < typeList.size() - 1; i++){
       node.argList.get(i).accept(this);
@@ -427,6 +490,39 @@ public class TypeChecker implements Visitor {
 
   
   // helper functions
+
+  private Boolean arrayType() throws MyPLException {
+    String temporary = null;
+    Boolean isArray = false;
+    String comparison = "array";
+    if (currType.length() > comparison.length() + 1){
+      isArray = true;
+      for(int i = 0 ; i < comparison.length(); i++){
+        if(currType.charAt(i) != comparison.charAt(i)){
+          isArray = false;
+        }
+      }
+      if(isArray){
+        temporary = Character.toString(currType.charAt(comparison.length()));
+        for(int i = comparison.length() + 1; i < currType.length(); i++){
+          temporary += currType.charAt(i);
+        }
+      }
+    }
+    if(isArray){
+    currType = temporary;
+    }
+    return isArray;
+  }
+
+  private void defineArray(CallRValue node) throws MyPLException{
+    String input = "array"+currType;
+    symbolTable.setInfo("length", List.of(input,"int"));
+
+    symbolTable.setInfo("get", List.of("int", input, currType));
+
+    symbolTable.setInfo("put", List.of("int", input, currType, "nil"));
+  }
 
   private void error(String msg, Token token) throws MyPLException {
     int row = token.row();

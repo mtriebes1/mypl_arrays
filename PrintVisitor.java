@@ -47,17 +47,6 @@ public class PrintVisitor implements Visitor {
 		}
 	}
 
-	//<arrdecl> ::= ARRAY (<dtype> | epsilon) LBRACKET <expr> RBRACKET <aitem>
-	public void visit(ArrDeclStmt node) {
-		out.print("array ");
-		if (node.arrType != null) {
-			out.print(node.arrType.lexeme() + " ");
-		}
-		out.print("[");
-		//node.arrSize.accept(this);
-		out.print("]");
-		out.print(node.arrName.lexeme());
-	}
 
 	public void visit(VarDeclStmt node) {
 		out.print("var ");

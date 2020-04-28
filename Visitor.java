@@ -1,3 +1,4 @@
+
 /**
  * Author: S. Bowers
  * Assign: 4
@@ -6,6 +7,7 @@
  * Visitor interface for MyPL AST.
  */
 
+
 public interface Visitor {
 
   // statement list
@@ -13,7 +15,6 @@ public interface Visitor {
 
   // statements
   public void visit(VarDeclStmt node) throws MyPLException;
-  public void visit(ArrDeclStmt node) throws MyPLException;
   public void visit(AssignStmt node) throws MyPLException;
   public void visit(ReturnStmt node) throws MyPLException;
   public void visit(IfStmt node) throws MyPLException;
@@ -21,6 +22,7 @@ public interface Visitor {
   public void visit(ForStmt node) throws MyPLException;
   public void visit(TypeDeclStmt node) throws MyPLException;
   public void visit(FunDeclStmt node) throws MyPLException;
+  public void visit(ArrDeclStmt node) throws MyPLException;
 
   // expressions
   public void visit(Expr node) throws MyPLException;
@@ -34,6 +36,7 @@ public interface Visitor {
   public void visit(CallRValue node) throws MyPLException;
   public void visit(IDRValue node) throws MyPLException;
   public void visit(NegatedRValue node) throws MyPLException;
+  public void visit(Aitem node) throws MyPLException;
 
 }    
 
