@@ -1,0 +1,47 @@
+# ------------------------------------------------------- Test 1
+print("Test 1: All the elements are in the array (int)")
+print("\n")
+array int [10] test1 := []
+var int len := length(test1)
+var int i := 0
+var int val := 0
+set test1 := [0,1,2,3,4,5,6,7,8,9]
+set len := length(test1)
+while i < len do
+    set val := get(i, test1)
+    print(itos(val))
+    set i := i + 1
+end 
+
+print("\n")
+print("Should be: 0 1 2 3 4 5 6 7 8 9")
+print("\n")
+
+# ------------------------------------------------------- Test 2
+print("Test 2: All the elements are in the array (string)")
+print("\n")
+array string [3] test2 := []
+set  len := length(test1)
+set  i := 0
+var string value := ""
+set test2 := ["Alex ", "Matthew", " Nick"]
+set len := length(test2)
+while i < len do
+    set value := get(i, test2)
+    print(value)
+    set i := i + 1
+end 
+
+#should errror
+put(5,test2,"aaaaaa")
+
+var string letter := "hello"
+put(1,letter,'a')
+
+
+
+print("\n")
+print("Should be: Alex Matthew Nick")
+print("\n")
+
+
