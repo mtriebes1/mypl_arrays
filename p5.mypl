@@ -1,8 +1,42 @@
-# -------- General Test cases 
-array int [6] test1 = [1, 2, 3, 4, 5, 6]
-var int len := 0
-var int item := 0
 
-set len := length(test1)
-set test1 := put(test1, 2, 10)
-set item := get(test1, 2)
+# combos of bool expressions
+
+var x := 0
+var y := 1
+var z := 2
+
+print("test 1: ")
+if x < 1 then
+  print("pass\n")
+else
+  print("fail\n")
+end
+
+print("test 2: ")
+if x > 1 then
+  print("fail\n")
+else
+  print("pass\n")
+end
+
+print("test 3: ")
+if (x < y) and (y < z) then
+  print("pass\n")
+else
+  print("fail\n")
+end
+
+print("test 4: ")
+if (x > y) or (y > z) then
+  print("fail\n")
+else
+  print("pass\n")
+end
+
+print("test 5: ")
+if ((x > 1) and (y > 1)) or ((x <= y) and (x <= z)) then
+  print("pass\n")
+else
+  print("fail\n")
+end
+

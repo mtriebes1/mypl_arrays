@@ -151,6 +151,9 @@ public class Interpreter implements Visitor {
     Object firstVal = currVal;
     
     if (node.operator != null) {
+      if(firstVal instanceof Aitem){
+        error("cannot compare arrays",getFirstToken(node));
+      }
       node.rest.accept(this);
       Object restVal = currVal;
       String op = node.operator.lexeme();
@@ -278,8 +281,24 @@ public class Interpreter implements Visitor {
 
 
   public void visit(LValue node) throws MyPLException {
+    int arrsize;
+    List<Object> temp = new ArrayList<>();
+    int Idsize;
+    List<Object> content = new ArrayList<>();
     if(node.path.size() == 1){
+      if(currVal instanceof List){
+        arrsize = ((List<Object>)currVal).size();
+        temp = (List<Object>)symbolTable.getInfo(node.path.get(0).lexeme());
+        Idsize = (Integer)temp.get(0);
+        if(arrsize > Idsize){
+          error("size mismatch", getFirstToken((Expr)currVal));
+        }
+        content = List.of(temp.get(0),currVal);
+        symbolTable.setInfo(node.path.get(0).lexeme(),content);
+      }
+      else{
       symbolTable.setInfo(node.path.get(0).lexeme(), currVal);
+      }
     }
     else{
       int oid = (Integer)symbolTable.getInfo(node.path.get(0).lexeme());
@@ -289,7 +308,20 @@ public class Interpreter implements Visitor {
         oid = (Integer)obj.get(node.path.get(i).lexeme());
         obj = (Map<String,Object>)heap.get(oid);
       }
-      obj.put(node.path.get(node.path.size() - 1).lexeme(), currVal);
+      if(currVal instanceof List){
+        arrsize = ((List<Object>)currVal).size();
+        temp = (List<Object>)obj.get(node.path.get(node.path.size() -1).lexeme());
+        Idsize = (Integer)temp.get(0);
+        if(arrsize > Idsize){
+          error("size mismatch", getFirstToken((Expr)currVal));
+        }
+        content = List.of(temp.get(0),currVal);
+        symbolTable.setInfo(node.path.get(0).lexeme(),content);
+        obj.put(node.path.get(node.path.size() -1).lexeme(),content);
+      }
+      else{
+       obj.put(node.path.get(node.path.size() - 1).lexeme(), currVal);
+      }
 
     }
   }
@@ -350,7 +382,7 @@ public class Interpreter implements Visitor {
   public void visit(CallRValue node) throws MyPLException {
     List<String> builtIns = List.of("print", "read", "length", "get",
                                     "concat", "append", "itos", "stoi",
-                                    "dtos", "stod");
+                                    "dtos", "stod", "put");
     String funName = node.funName.lexeme();
     if (builtIns.contains(funName))
       callBuiltInFun(node);
@@ -391,6 +423,25 @@ public class Interpreter implements Visitor {
     }
   }
 
+  public void visit(ArrDeclStmt node) throws MyPLException {
+    node.arrSize.accept(this);
+    int Size = (Integer)currVal;
+    node.arrList.accept(this);
+    List<Object> items = new ArrayList<>();
+    items = (List<Object>)currVal;
+    if(items.size() > Size){
+      error("array out of bounds", node.arrName);
+    }
+    List<Object> content= List.of(Size,items);
+    symbolTable.addName(node.arrName.lexeme());
+    symbolTable.setInfo(node.arrName.lexeme(), content);
+  }
+
+  public void visit(Aitem node) throws MyPLException {
+    currVal = node.items;
+  }
+
+
   
   public void visit(IDRValue node) throws MyPLException {
     if(node.path.size() > 1){
@@ -401,11 +452,19 @@ public class Interpreter implements Visitor {
         oid = (int)obj.get(node.path.get(i).lexeme());
         obj = (Map<String, Object>)heap.get(oid);
       }
-      currVal = obj.get(node.path.get(node.path.size() - 1).lexeme());
+      if(obj.get(node.path.get(node.path.size() - 1).lexeme()) instanceof List){
+        currVal = ((List)obj.get(node.path.get(node.path.size() -1).lexeme())).get(1);
+      }
+      else{
+        currVal = obj.get(node.path.get(node.path.size() - 1).lexeme());
+      }
     }
     else{
       String varName = node.path.get(0).lexeme();
       currVal = symbolTable.getInfo(varName);
+      if(currVal instanceof List){
+        currVal = ((List<Object>)currVal).get(1);
+      }
     }
     
   }
@@ -454,14 +513,6 @@ public class Interpreter implements Visitor {
         currVal = null;
       }
     }
-    else if (funName.equals("get")) {
-      int index = (Integer)argVals.get(0);
-      String str = (String)argVals.get(1);
-      if(index > str.length() - 1){
-        error("index out of bounds", getFirstToken(node));
-      }
-      currVal = str.charAt(index);
-    }
     else if (funName.equals("concat")) {
       String str1 = (String)argVals.get(0);
       String str2 = (String)argVals.get(1);
@@ -481,6 +532,47 @@ public class Interpreter implements Visitor {
     }
     else if (funName.equals("stod")) {
       currVal = Double.parseDouble((String)argVals.get(0));
+    }
+    // ------------- array functions
+    else if (funName.equals("get")) 
+    {
+      if(argVals.get(1) instanceof List){
+        int get_index = (Integer)argVals.get(0);
+        List<Object> arr = (List<Object>)argVals.get(1);
+        if(get_index > arr.size() - 1){
+          error("index out of bounds", getFirstToken(node));
+        }
+        ((Expr)arr.get(get_index)).accept(this);
+      }
+      else{
+        if((Integer)argVals.get(0) < ((String)argVals.get(1)).length()){
+          currVal = ((String)argVals.get(1)).charAt((Integer)argVals.get(0));
+        }
+        else{
+          error("get out of bounds",getFirstToken(node.argList.get(0)));
+        }
+      }
+    }
+    else if (funName.equals("put")) 
+    {
+      int put_index = (Integer)argVals.get(0);
+      List<Object> arr = (List<Object>)argVals.get(1);
+      if(argVals.get(2) instanceof String){
+        error("put does not yet work with strings",getFirstToken(node.argList.get(0)));
+      }
+      if(put_index > arr.size() -1){
+        error("invalid index", getFirstToken(node.argList.get(0)));
+      }
+      arr.set(put_index,node.argList.get(2));
+    }
+    else if (funName.equals("length")) {
+      if(argVals.get(0) instanceof List){
+      List<Object> arr = (List<Object>)argVals.get(0);
+      currVal = (Integer)arr.size();
+      }
+      else{
+        currVal = ((String)argVals.get(0)).length();
+      }
     }
   }
 

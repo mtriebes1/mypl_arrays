@@ -1,36 +1,59 @@
-# ------------------------------------------------------- Test 1
-print("Test 1: All the elements are in the array (int)")
-print("\n")
-array int [10] test1 := []
-var int len := length(test1)
-var int i := 0
-var int val := 0
-set test1 := [0,1,2,3,4,5,6,7,8,9]
-
-while i < len do
-    set val := get(i, test1)
-    print(itos(val))
-    set i := i + 1
-end 
-
-print("\n")
-print("Should be: 0 1 2 3 4 5 6 7 8 9")
-print("\n")
 
 # ------------------------------------------------------- Test 2
 print("Test 2: All the elements are in the array (string)")
 print("\n")
-array string [3] test2 := []
-var int len := length(test1)
+array string [3] test := []
+var int len := length(test)
+print(itos(len))
 var int i := 0
-var string val := ""
-set test2 := ["Alex ", "Matthew", " Nick"]
-
+#var string val := "hello"
+print("\n")
+set test := ["Alex ", "Matthew", " Nick"]
+set len := length(test)
+var string value := nil
 while i < len do
-    set val := get(i, test2)
-    print(val)
+    set value := get(i, test)
+    print(value)
+    print("\n")
     set i := i + 1
 end 
+print("\n")
+var string ah := "test"
+print(ah)
+print("\n")
+set ah := "testing"
+print(ah)
+print("\n")
+
+print("\n")
+print(itos(len))
+array int [20] tester := [1,2,3,4,5,6,7,8,9,0,10]
+var int val := get(0,tester)
+print("\n")
+print(itos(val))
+print("\n")
+print("\n")
+set len := length(tester)
+while i < len do
+    set val := get(i, tester)
+    print(itos(val))
+    print("\n")
+    set i := i + 1
+end 
+
+put(1,tester, 57)
+#array int [1] items := [20,2]
+
+print("\n")
+print("\n")
+set i := 0
+while i < len do
+    set val := get(i, tester)
+    print(itos(val))
+    print("\n")
+    set i := i + 1
+end 
+
 
 print("\n")
 print("Should be: Alex Matthew Nick")
