@@ -557,6 +557,12 @@ public class Interpreter implements Visitor {
     {
       int put_index = (Integer)argVals.get(0);
       List<Object> arr = (List<Object>)argVals.get(1);
+      if(argVals.get(2) instanceof String){
+        error("put does not yet work with strings",getFirstToken(node.argList.get(0)));
+      }
+      if(put_index > arr.size() -1){
+        error("invalid index", getFirstToken(node.argList.get(0)));
+      }
       arr.set(put_index,node.argList.get(2));
     }
     else if (funName.equals("length")) {
